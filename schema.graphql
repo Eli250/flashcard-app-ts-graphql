@@ -2,8 +2,22 @@
 ### Do not make changes to this file directly
 
 
+type AuthPayload {
+  token: String!
+  user: User!
+}
+
+input CardOrderByInput {
+  answer: Sort
+  createdAt: Sort
+  details: Sort
+  id: Sort
+  question: Sort
+}
+
 type Flashcard {
   answer: String!
+  cardOwner: User
   details: String!
   id: Int!
   image: String
@@ -12,9 +26,23 @@ type Flashcard {
 }
 
 type Mutation {
+  login(email: String!, password: String!): AuthPayload!
   post(answer: String!, details: String!, image: String, question: String!): Flashcard!
+  signup(email: String!, name: String!, password: String!): AuthPayload!
 }
 
 type Query {
-  allFlashcards: [Flashcard!]!
+  allFlashcards(filter: String, orderBy: [CardOrderByInput!]): [Flashcard!]!
+}
+
+enum Sort {
+  asc
+  desc
+}
+
+type User {
+  email: String!
+  flashcards: [Flashcard!]!
+  id: Int!
+  name: String!
 }
