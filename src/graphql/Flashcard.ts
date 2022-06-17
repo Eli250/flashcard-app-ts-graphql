@@ -9,6 +9,7 @@ import {
   arg,
   list,
 } from "nexus";
+import { ApolloError } from "apollo-server";
 import { Prisma } from "@prisma/client";
 
 export const Flashcard = objectType({
@@ -79,7 +80,10 @@ export const AddFlashcard = extendType({
         const { userId } = context;
 
         if (!userId) {
-          throw new Error("Please signin to create a flashcard");
+          throw new ApolloError(
+            "Please signin to create a flashcard",
+            "UNAUTHORIZED"
+          );
         }
         const newFlashcard = context.prisma.flashcard.create({
           data: {
