@@ -1,4 +1,16 @@
-import { extendType, objectType, nonNull, stringArg } from "nexus";
+import {
+  extendType,
+  nonNull,
+  objectType,
+  stringArg,
+  intArg,
+  inputObjectType,
+  enumType,
+  arg,
+  list,
+} from "nexus";
+import { ApolloError } from "apollo-server";
+import { Prisma } from "@prisma/client";
 
 export const Flashcard = objectType({
   name: "Flashcard",
@@ -9,6 +21,16 @@ export const Flashcard = objectType({
     t.nonNull.string("details");
     t.boolean("isDone");
     t.string("image");
+    t.field("cardOwner", {
+      type: "User",
+      resolve(parent, args, context) {
+        return context.prisma.flashcard
+          .findUnique({
+            where: { id: parent.id },
+          })
+          .cardOwner();
+      },
+    });
   },
 });
 
@@ -17,8 +39,26 @@ export const FlashcardQuery = extendType({
   definition(t) {
     t.nonNull.list.nonNull.field("allFlashcards", {
       type: "Flashcard",
+      args: {
+        filter: stringArg(),
+        orderBy: arg({ type: list(nonNull(CardOrderByInput)) }),
+      },
       resolve(parent, args, context, info) {
-        return context.prisma.flashcard.findMany();
+        const where = args.filter
+          ? {
+              OR: [
+                { question: { contains: args.filter } },
+                { answer: { contains: args.filter } },
+                { details: { contains: args.filter } },
+              ],
+            }
+          : {};
+        return context.prisma.flashcard.findMany({
+          where,
+          orderBy: args?.orderBy as
+            | Prisma.Enumerable<Prisma.FlashcardOrderByWithRelationInput>
+            | undefined,
+        });
       },
     });
   },
@@ -37,16 +77,41 @@ export const AddFlashcard = extendType({
       },
       resolve(parent, args, context) {
         const { question, answer, details } = args;
+        const { userId } = context;
+
+        if (!userId) {
+          throw new ApolloError(
+            "Please signin to create a flashcard",
+            "UNAUTHORIZED"
+          );
+        }
         const newFlashcard = context.prisma.flashcard.create({
           data: {
             question: question,
             answer: answer,
             details: details,
             image: args?.image as string,
+            cardOwner: { connect: { id: userId } },
           },
         });
         return newFlashcard;
       },
     });
   },
+});
+
+export const CardOrderByInput = inputObjectType({
+  name: "CardOrderByInput",
+  definition(t) {
+    t.field("id", { type: Sort });
+    t.field("question", { type: Sort });
+    t.field("answer", { type: Sort });
+    t.field("details", { type: Sort });
+    t.field("createdAt", { type: Sort });
+  },
+});
+
+export const Sort = enumType({
+  name: "Sort",
+  members: ["asc", "desc"],
 });

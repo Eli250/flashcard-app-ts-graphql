@@ -14,9 +14,17 @@ declare global {
 }
 
 export interface NexusGenInputs {
+  CardOrderByInput: { // input type
+    answer?: NexusGenEnums['Sort'] | null; // Sort
+    createdAt?: NexusGenEnums['Sort'] | null; // Sort
+    details?: NexusGenEnums['Sort'] | null; // Sort
+    id?: NexusGenEnums['Sort'] | null; // Sort
+    question?: NexusGenEnums['Sort'] | null; // Sort
+  }
 }
 
 export interface NexusGenEnums {
+  Sort: "asc" | "desc"
 }
 
 export interface NexusGenScalars {
@@ -28,6 +36,10 @@ export interface NexusGenScalars {
 }
 
 export interface NexusGenObjects {
+  AuthPayload: { // root type
+    token: string; // String!
+    user: NexusGenRootTypes['User']; // User!
+  }
   Flashcard: { // root type
     answer: string; // String!
     details: string; // String!
@@ -38,6 +50,11 @@ export interface NexusGenObjects {
   }
   Mutation: {};
   Query: {};
+  User: { // root type
+    email: string; // String!
+    id: number; // Int!
+    name: string; // String!
+  }
 }
 
 export interface NexusGenInterfaces {
@@ -48,11 +65,16 @@ export interface NexusGenUnions {
 
 export type NexusGenRootTypes = NexusGenObjects
 
-export type NexusGenAllTypes = NexusGenRootTypes & NexusGenScalars
+export type NexusGenAllTypes = NexusGenRootTypes & NexusGenScalars & NexusGenEnums
 
 export interface NexusGenFieldTypes {
+  AuthPayload: { // field return type
+    token: string; // String!
+    user: NexusGenRootTypes['User']; // User!
+  }
   Flashcard: { // field return type
     answer: string; // String!
+    cardOwner: NexusGenRootTypes['User'] | null; // User
     details: string; // String!
     id: number; // Int!
     image: string | null; // String
@@ -60,16 +82,29 @@ export interface NexusGenFieldTypes {
     question: string; // String!
   }
   Mutation: { // field return type
+    login: NexusGenRootTypes['AuthPayload']; // AuthPayload!
     post: NexusGenRootTypes['Flashcard']; // Flashcard!
+    signup: NexusGenRootTypes['AuthPayload']; // AuthPayload!
   }
   Query: { // field return type
     allFlashcards: NexusGenRootTypes['Flashcard'][]; // [Flashcard!]!
   }
+  User: { // field return type
+    email: string; // String!
+    flashcards: NexusGenRootTypes['Flashcard'][]; // [Flashcard!]!
+    id: number; // Int!
+    name: string; // String!
+  }
 }
 
 export interface NexusGenFieldTypeNames {
+  AuthPayload: { // field return type name
+    token: 'String'
+    user: 'User'
+  }
   Flashcard: { // field return type name
     answer: 'String'
+    cardOwner: 'User'
     details: 'String'
     id: 'Int'
     image: 'String'
@@ -77,20 +112,43 @@ export interface NexusGenFieldTypeNames {
     question: 'String'
   }
   Mutation: { // field return type name
+    login: 'AuthPayload'
     post: 'Flashcard'
+    signup: 'AuthPayload'
   }
   Query: { // field return type name
     allFlashcards: 'Flashcard'
+  }
+  User: { // field return type name
+    email: 'String'
+    flashcards: 'Flashcard'
+    id: 'Int'
+    name: 'String'
   }
 }
 
 export interface NexusGenArgTypes {
   Mutation: {
+    login: { // args
+      email: string; // String!
+      password: string; // String!
+    }
     post: { // args
       answer: string; // String!
       details: string; // String!
       image?: string | null; // String
       question: string; // String!
+    }
+    signup: { // args
+      email: string; // String!
+      name: string; // String!
+      password: string; // String!
+    }
+  }
+  Query: {
+    allFlashcards: { // args
+      filter?: string | null; // String
+      orderBy?: NexusGenInputs['CardOrderByInput'][] | null; // [CardOrderByInput!]
     }
   }
 }
@@ -103,9 +161,9 @@ export interface NexusGenTypeInterfaces {
 
 export type NexusGenObjectNames = keyof NexusGenObjects;
 
-export type NexusGenInputNames = never;
+export type NexusGenInputNames = keyof NexusGenInputs;
 
-export type NexusGenEnumNames = never;
+export type NexusGenEnumNames = keyof NexusGenEnums;
 
 export type NexusGenInterfaceNames = never;
 

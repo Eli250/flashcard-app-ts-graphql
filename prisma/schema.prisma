@@ -15,8 +15,18 @@ model Flashcard{
   question  String
   answer    String
   details   String
+  cardOwner User?               @relation(fields: [ownerId],references: [id])
+  ownerId   Int?
   image     String              @default("https://www.computerhope.com/issues/pictures/question.jpg")
   isDone    Boolean             @default(false)
   createdAt DateTime            @default(now())
   updatedAt DateTime            @default(now())
+}
+
+model User{
+  id        Int       @id       @default(autoincrement())
+  name      String
+  email     String    @unique
+  password  String
+  flashcards Flashcard[]
 }
