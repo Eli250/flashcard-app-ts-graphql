@@ -1,0 +1,45 @@
+{
+  "name": "flashcard-app-ts-graphql",
+  "version": "1.0.0",
+  "description": "flashcards app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "ts-node-dev --transpile-only --no-notify --exit-child src/index.ts",
+    "generate": "ts-node --transpile-only src/schema",
+    "prettier-format": "prettier 'src/**/*.ts' --write",
+    "migrate": " npx prisma migrate dev --name",
+    "migrate:deploy": "prisma migrate deploy",
+    "build": "prisma generate && npm run generate && tsc",
+    "start": "node dist/src/index.js",
+    "pinit": "npx prisma init",
+    "runp": "npx ts-node src/script.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Eli250/flashcard-app-ts-graphql.git"
+  },
+  "author": "Eli Hirwa",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Eli250/flashcard-app-ts-graphql/issues"
+  },
+  "homepage": "https://github.com/Eli250/flashcard-app-ts-graphql#readme",
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.2",
+    "@types/jsonwebtoken": "^8.5.8",
+    "prisma": "^3.15.2",
+    "ts-node-dev": "^1.1.8",
+    "typescript": "^4.7.3"
+  },
+  "dependencies": {
+    "@prisma/client": "^3.15.2",
+    "apollo-server": "^3.9.0",
+    "bcryptjs": "^2.4.3",
+    "graphql": "^15.8.0",
+    "graphql-scalars": "^1.17.0",
+    "jsonwebtoken": "^8.5.1",
+    "nexus": "^1.3.0",
+    "ts-node": "^10.8.1"
+  }
+}
