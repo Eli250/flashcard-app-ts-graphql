@@ -32,7 +32,7 @@ type Mutation {
 }
 
 type Query {
-  allFlashcards(filter: String, orderBy: [CardOrderByInput!]): [Flashcard!]!
+  allFlashcards(filter: String, orderBy: [CardOrderByInput!], skip: Int, take: Int): [Flashcard!]!
 }
 
 enum Sort {

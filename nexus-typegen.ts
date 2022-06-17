@@ -149,6 +149,8 @@ export interface NexusGenArgTypes {
     allFlashcards: { // args
       filter?: string | null; // String
       orderBy?: NexusGenInputs['CardOrderByInput'][] | null; // [CardOrderByInput!]
+      skip?: number | null; // Int
+      take?: number | null; // Int
     }
   }
 }

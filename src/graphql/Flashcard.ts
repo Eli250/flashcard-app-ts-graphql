@@ -41,6 +41,8 @@ export const FlashcardQuery = extendType({
       type: "Flashcard",
       args: {
         filter: stringArg(),
+        skip: intArg(),
+        take: intArg(),
         orderBy: arg({ type: list(nonNull(CardOrderByInput)) }),
       },
       resolve(parent, args, context, info) {
@@ -58,6 +60,8 @@ export const FlashcardQuery = extendType({
           orderBy: args?.orderBy as
             | Prisma.Enumerable<Prisma.FlashcardOrderByWithRelationInput>
             | undefined,
+          skip: args?.skip as number | undefined,
+          take: args?.take as number | undefined,
         });
       },
     });
