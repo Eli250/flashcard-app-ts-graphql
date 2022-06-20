@@ -3,8 +3,8 @@ name: deploy-flashcard-app-heroku
 on:
   push:
     branches:
-      - master
       - main
+      - dev
 
 jobs:
   deploy:

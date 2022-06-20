@@ -6,6 +6,8 @@ import {
   intArg,
   inputObjectType,
   enumType,
+  nullable,
+  booleanArg,
   arg,
   list,
 } from "nexus";
@@ -41,6 +43,8 @@ export const FlashcardQuery = extendType({
       type: "Flashcard",
       args: {
         filter: stringArg(),
+        skip: intArg(),
+        take: intArg(),
         orderBy: arg({ type: list(nonNull(CardOrderByInput)) }),
       },
       resolve(parent, args, context, info) {
@@ -58,6 +62,8 @@ export const FlashcardQuery = extendType({
           orderBy: args?.orderBy as
             | Prisma.Enumerable<Prisma.FlashcardOrderByWithRelationInput>
             | undefined,
+          skip: args?.skip as number | undefined,
+          take: args?.take as number | undefined,
         });
       },
     });
@@ -95,6 +101,62 @@ export const AddFlashcard = extendType({
           },
         });
         return newFlashcard;
+      },
+    });
+    t.nonNull.field("updateFlashcard", {
+      type: "Flashcard",
+      args: {
+        id: nonNull(intArg()),
+        question: nullable(stringArg()),
+        answer: nullable(stringArg()),
+        details: nullable(stringArg()),
+        isDone: nullable(booleanArg()),
+        image: nullable(stringArg()),
+      },
+
+      resolve(parent, args, context) {
+        const { id, question, answer, details, isDone, image } = args;
+        const { userId } = context;
+
+        if (!userId) {
+          throw new ApolloError(
+            "Please signin to update a flashcard",
+            "UNAUTHORIZED"
+          );
+        }
+
+        const updatedFlashcard = context.prisma.flashcard.update({
+          where: { id },
+          data: {
+            ...(question && { question }),
+            ...(answer && { answer }),
+            ...(details && { details }),
+            ...(isDone != null && { isDone }),
+            ...(image && { image }),
+          },
+        });
+
+        return updatedFlashcard;
+      },
+    });
+    t.nonNull.field("deleteFlashcard", {
+      type: "Flashcard",
+      args: {
+        id: nonNull(intArg()),
+      },
+      resolve(parent, args, context) {
+        const { id } = args;
+        const { userId } = context;
+
+        if (!userId) {
+          throw new ApolloError(
+            "Please signin to delete a flashcard",
+            "UNAUTHORIZED"
+          );
+        }
+        return context.prisma.flashcard.delete({
+          where: { id },
+        });
       },
     });
   },

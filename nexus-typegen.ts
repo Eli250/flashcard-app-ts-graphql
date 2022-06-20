@@ -82,9 +82,11 @@ export interface NexusGenFieldTypes {
     question: string; // String!
   }
   Mutation: { // field return type
+    deleteFlashcard: NexusGenRootTypes['Flashcard']; // Flashcard!
     login: NexusGenRootTypes['AuthPayload']; // AuthPayload!
     post: NexusGenRootTypes['Flashcard']; // Flashcard!
     signup: NexusGenRootTypes['AuthPayload']; // AuthPayload!
+    updateFlashcard: NexusGenRootTypes['Flashcard']; // Flashcard!
   }
   Query: { // field return type
     allFlashcards: NexusGenRootTypes['Flashcard'][]; // [Flashcard!]!
@@ -112,9 +114,11 @@ export interface NexusGenFieldTypeNames {
     question: 'String'
   }
   Mutation: { // field return type name
+    deleteFlashcard: 'Flashcard'
     login: 'AuthPayload'
     post: 'Flashcard'
     signup: 'AuthPayload'
+    updateFlashcard: 'Flashcard'
   }
   Query: { // field return type name
     allFlashcards: 'Flashcard'
@@ -129,6 +133,9 @@ export interface NexusGenFieldTypeNames {
 
 export interface NexusGenArgTypes {
   Mutation: {
+    deleteFlashcard: { // args
+      id: number; // Int!
+    }
     login: { // args
       email: string; // String!
       password: string; // String!
@@ -144,11 +151,21 @@ export interface NexusGenArgTypes {
       name: string; // String!
       password: string; // String!
     }
+    updateFlashcard: { // args
+      answer?: string | null; // String
+      details?: string | null; // String
+      id: number; // Int!
+      image?: string | null; // String
+      isDone?: boolean | null; // Boolean
+      question?: string | null; // String
+    }
   }
   Query: {
     allFlashcards: { // args
       filter?: string | null; // String
       orderBy?: NexusGenInputs['CardOrderByInput'][] | null; // [CardOrderByInput!]
+      skip?: number | null; // Int
+      take?: number | null; // Int
     }
   }
 }
