@@ -26,9 +26,11 @@ type Flashcard {
 }
 
 type Mutation {
+  deleteFlashcard(id: Int!): Flashcard!
   login(email: String!, password: String!): AuthPayload!
   post(answer: String!, details: String!, image: String, question: String!): Flashcard!
   signup(email: String!, name: String!, password: String!): AuthPayload!
+  updateFlashcard(answer: String, details: String, id: Int!, image: String, isDone: Boolean, question: String): Flashcard!
 }
 
 type Query {
